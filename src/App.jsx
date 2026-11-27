@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
 
 function App() {
   // 1. expenses
   // 2. expenseName
   // 3. expenseAmount
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState(
+    () => {
+      const saved = localStorage.getItem('expenses');
+      return saved ? JSON.parse(saved) : [];
+    }
+  );
   const [expenseName, setExpenseName] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
+
 
   function handleAddExpense(){
     // console.log("Name:", expenseName, "Amount:",expenseAmount);
@@ -23,6 +29,9 @@ function App() {
   }
   const total = expenses.reduce((sum, expense) => sum + expense.amount,0);
 
+  useEffect(() => 
+  localStorage.setItem('expenses', JSON.stringify(expenses))
+  );
   function handleDeleteExpense(idToDelete){
     const updateExpenses = expenses.filter((expense) => expense.id !== idToDelete);
     setExpenses(updateExpenses);
